@@ -53,6 +53,7 @@ export const getPkgList = async () => {
  */
 export const pushorder = async (data) => {
     let text = '';
+	let colorType = null;
     text += getnow() + ' ***********************' + '\n'
     text += getnow()+'['+'开始推送]:'+'\n'
     text += getnow()+'['+'请求内容]:'+JSON.stringify(data)+'\n'
@@ -67,7 +68,7 @@ export const pushorder = async (data) => {
         }
         // console.log(data)
         const res = await uni.request(req);
-        // console.log(res)
+        console.log(res)
 
         if (res) {
             if (res.data.code == 0) {
@@ -76,6 +77,9 @@ export const pushorder = async (data) => {
             } else {
                 text += getnow()+'['+'推送结果]:false'+'\n'
                 text += getnow()+'['+'返回内容]:'+JSON.stringify(res.data)+'}'+'\n'
+				if(res.data.code == 4001){
+					colorType = 1;
+				}
                 // throw error;
             }
         } else {
@@ -83,7 +87,7 @@ export const pushorder = async (data) => {
         }
         text += getnow()+' ***********************'+'\n'
         //显示页面log
-        modifyList(text,true)
+        modifyList(text,true,colorType)
         return res.data; // 返回请求响应的数据
     } catch (error) {
         throw error; // 抛出错误以供上层处理
@@ -144,16 +148,23 @@ export const analyze = (pkglist) => {
 }
 
 //vuex修改list
-export function modifyList(content,err = false) {
+export function modifyList(content,err = false,colorType = null) {
     const list = store.state.list;
     let msg = content;
+	// console.log(content)
     if (err == false) { 
         msg = cardmsg(content)
     }
+	
+	let color = null;
+	if(colorType == 1){
+		color = 'red';
+	}
     
     // console.log(list)
     let listcard = {
         content: msg,
+		textColor: color
     }
     //追加内容显示在页面
     store.commit('updateList', [...list, listcard]);

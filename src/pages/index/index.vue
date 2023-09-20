@@ -7,7 +7,7 @@
     <text class="log-msg">{{ msg }}</text>
     <uni-section overflow title="卡片标题" type="line">
       <view class="cu-card case" v-for="(item, index) in list" :key="index">
-        <text class="log-text">{{ item.content }}</text>
+        <text class="log-text" :style="{ color: item.textColor }">{{ item.content }}</text>
         <br />
         <hr />
       </view>
@@ -96,6 +96,7 @@ const load = async () => {
     // console.log(JSON.stringify(msg));
     try {
       store.commit('updateMsg', msg);
+	  //解析消息通知
       analyze(pkgdata);
     } catch (e) {
       //隐藏其他乱七八糟的app的消息，只显示系统银行
